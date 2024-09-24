@@ -1,0 +1,58 @@
+# Use the AlmaLinux 9 base image
+FROM almalinux:9
+
+# Install necessary packages
+RUN yum update -y && \
+    yum install -y \
+        epel-release && \
+    yum install -y yum-utils && \
+    yum config-manager --set-enabled crb && \
+    yum install -y \
+        xorg-x11-server-Xorg \
+        xorg-x11-xauth \
+        xorg-x11-xinit \
+        xterm \
+        openbox \
+        tigervnc-server \
+        dbus-x11 \
+        firefox \
+        gtk3 \
+        libX11 \
+        alsa-lib \
+        nss \
+        atk \
+        libXtst \
+        libXScrnSaver \
+        libXcomposite \
+        libXdamage \
+        libXcursor \
+        libXi \
+        libXrandr \
+        libXrender \
+        pango \
+        alsa-plugins-pulseaudio \
+        cups-libs \
+        util-linux \
+        procps \
+        --setopt=install_weak_deps=False \
+        --exclude=*.i686 && \
+    yum clean all
+
+# Set up the VNC server configuration
+RUN mkdir -p /root/.vnc
+
+# Set VNC password (replace 'YourSecurePasswordHere' with your desired password)
+RUN echo 'YourSecurePasswordHere' | vncpasswd -f > /root/.vnc/passwd && \
+    chmod 600 /root/.vnc/passwd
+
+# Copy the startup script into the image
+COPY startup.sh /root/startup.sh
+
+# Make the startup script executable
+RUN chmod +x /root/startup.sh
+
+# Expose the VNC port
+EXPOSE 5901
+
+# Set the default command to run the startup script
+CMD ["/root/startup.sh"]

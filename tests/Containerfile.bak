@@ -1,0 +1,39 @@
+FROM registry.access.redhat.com/ubi9/ubi:latest
+
+# Install necessary tools
+RUN dnf install -y wget dnf-utils && \
+    dnf clean all
+
+# Enable EPEL repository
+RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    rpm -Uvh epel-release-latest-9.noarch.rpm && \
+    dnf repolist
+
+# Install X.org and Fluxbox
+RUN dnf install -y \
+        xorg-x11-server-Xorg \
+        xorg-x11-xinit \
+        xterm \
+        fluxbox \
+        tigervnc-server && \
+    dnf clean all
+
+# Create a user and set VNC password
+RUN useradd -ms /bin/bash user && \
+    echo "yourpassword" | vncpasswd -f > /home/user/.vnc/passwd && \
+    chown -R user:user /home/user/.vnc && \
+    chmod 600 /home/user/.vnc/passwd
+
+USER user
+WORKDIR /home/user
+
+# Set up the VNC server startup script
+RUN mkdir -p /home/user/.vnc && \
+    echo '#!/bin/sh\nfluxbox &' > /home/user/.vnc/xstartup && \
+    chmod +x /home/user/.vnc/xstartup
+
+# Expose VNC port
+EXPOSE 5901
+
+# Start VNC server when the container starts
+CMD ["vncserver", ":1", "-geometry", "1280x800", "-depth", "24"]

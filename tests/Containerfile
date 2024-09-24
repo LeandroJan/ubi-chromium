@@ -1,0 +1,35 @@
+# Use the AlmaLinux 9 base image
+FROM almalinux:9
+
+# Update the system and install necessary packages
+RUN yum update -y && \
+    yum install -y \
+        epel-release && \
+    yum install -y yum-utils && \
+    yum config-manager --set-enabled crb && \
+    yum install -y \
+        xorg-x11-server-Xorg \
+        xorg-x11-xauth \
+        xorg-x11-xinit \
+        xterm \
+        openbox \
+        tigervnc-server \
+        dbus-x11 && \
+    yum clean all
+
+# Set up the VNC server configuration
+RUN mkdir -p /root/.vnc
+
+# Set VNC password (replace 'YourSecurePasswordHere' with your desired password)
+RUN echo 'YourSecurePasswordHere' | vncpasswd -f > /root/.vnc/passwd && \
+    chmod 600 /root/.vnc/passwd
+
+# Create the xstartup script to start Openbox
+RUN echo '#!/bin/sh\n\nexec openbox-session &' > /root/.vnc/xstartup && \
+    chmod +x /root/.vnc/xstartup
+
+# Expose the VNC port
+EXPOSE 5901
+
+# Set the default command to start the VNC server
+CMD ["/usr/bin/vncserver", "-fg", ":1"]
