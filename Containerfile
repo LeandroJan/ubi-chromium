@@ -68,6 +68,8 @@ FROM registry.access.redhat.com/ubi9/ubi:latest AS runtime
 # Set the password using an environment variable
 ENV VNC_PASSWORD=YourSecurePasswordHere
 
+# Backup the original UBI 9 yum repository files
+RUN cp -r /etc/yum.repos.d /etc/yum.repos.d.backup
 
 # Copy necessary files from the builder stage
 COPY --from=builder /home/chromiumuser /home/chromiumuser
@@ -83,6 +85,17 @@ COPY --from=builder /run/dbus /run/dbus
 # COPY --from=builder /usr/share/themes /usr/share/themes
 # COPY --from=builder /etc/xdg/openbox /etc/xdg/openbox
 COPY --from=builder /usr/lib/python3.9/site-packages/xdg /usr/lib/python3.9/site-packages/xdg
+
+# Restore the original UBI 9 yum repository files
+RUN rm -rf /etc/yum.repos.d && \
+    mv /etc/yum.repos.d.backup /etc/yum.repos.d
+
+# Remove AlmaLinux repo files if they exist, and restore UBI 9 repositories
+# RUN rm -f /etc/yum.repos.d/almalinux*.repo || true && \
+#    yum clean all && \
+#    yum install -y 'dnf-command(config-manager)' && \
+#    dnf config-manager --enable ubi-9-baseos ubi-9-appstream && \
+#    yum update -y && yum clean all
 
 # Set permissions
 RUN chown -R chromiumuser:chromiumuser /home/chromiumuser && \
