@@ -25,7 +25,7 @@ eval $(dbus-launch --sh-syntax)
 # Start Openbox
 openbox-session &
 
-# Start Chromium with  option
- chromium-browser --no-message-box &
+# Start Chromium 
+ chromium-browser &
 
 wait
