@@ -1,4 +1,8 @@
 # ubi-chromium
+
+# Install VNC Viewer
+https://www.realvnc.com/pt/connect/download/viewer/
+
 # Command to build the container 
 podman build -t <image_name> .
 # Command to run the container
