@@ -1,12 +1,13 @@
 # ubi-chromium
 
-## Install VNC Viewer
-https://www.realvnc.com/pt/connect/download/viewer/
-
-## Command to build the container 
+## Command to build the Containerfile
 podman build -t <image_name> .
-## Command to run the container
-podman run -d  -p 5901:5901 --shm-size=2g  -e VNC_PASSWORD=<your_password> --name <container_name> <container_image>
-## Accessing the GUI
-Inside the VNC cliente put the address 'localhost:5901' (or other published port).
 
+## Command to build the Containerfile.redhat
+podman build -t <image_name> --build-arg RHEL_ORG=<number_here> --build-arg RHEL_AK=<ak_here> -f Containerfile.redhat
+
+## Command to run the Containerfile and Containerfile.redhat
+podman run -d -p 6080:6080 -e VNC_PASSWORD=<your_password> -e VNC_GEOMETRY=<default is 1280X800> --name <container_name> <image_name or id>
+
+## Accessing the GUI
+http://localhost:<chosen published port>

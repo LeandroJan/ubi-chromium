@@ -12,20 +12,18 @@ mkdir -p /home/chromiumuser/.vnc && \
 echo "${VNC_PASSWORD}" | vncpasswd -f > /home/chromiumuser/.vnc/passwd
 
 # Start Xvnc server with authentication
-Xvnc $DISPLAY -geometry 1280x800 -depth 24 -SecurityTypes VncAuth -PasswordFile /home/chromiumuser/.vnc/passwd &
+Xvnc ${DISPLAY} -geometry "${VNC_GEOMETRY}" -depth "${VNC_DEPTH}" -SecurityTypes VncAuth -PasswordFile /home/chromiumuser/.vnc/passwd -localhost 1 &
 
-sleep 2  # Ensure Xvnc has time to start
-
-# Set the keyboard layout (e.g., to US English)
-# setxkbmap us
-
-# Start session-based DBus (important for non-root users)
-eval $(dbus-launch --sh-syntax)
+# Ensure Xvnc has time to start
+sleep 2
 
 # Start Openbox
 openbox-session &
 
 # Start Chromium 
- chromium-browser &
+ chromium-browser --renderer-process-limit=2 --disable-dev-shm-usage --max-old-space-size=2048 &
+
+ #start novnc
+ novnc_server --vnc 127.0.0.1:5901 --listen ${NOVNC_PORT}
 
 wait
