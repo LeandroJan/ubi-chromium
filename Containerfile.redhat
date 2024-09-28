@@ -1,0 +1,79 @@
+FROM registry.access.redhat.com/ubi9/ubi:latest
+
+ARG RHEL_ORG=""
+ARG RHEL_AK=""
+
+ENV DISPLAY=:1
+ENV VNC_GEOMETRY=1280x800
+ENV VNC_DEPTH=24
+ENV NOVNC_PORT=6080
+
+# Install necessary packages in a single layer
+RUN subscription-manager register --org=${RHEL_ORG} --activationkey=${RHEL_AK} && \
+    dnf update --nodocs -y && \
+    dnf install -y \
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+        --setopt=install_weak_deps=False \
+        --nodocs && \
+    dnf install -y \
+        xorg-x11-server-Xorg \
+        xorg-x11-xauth \
+        xorg-x11-xinit \
+        xterm \
+        openbox \
+        tigervnc-server \
+        novnc \
+        dbus-x11 \
+        chromium \
+        gtk3 \
+        libX11 \
+        alsa-lib \
+        nss \
+        atk \
+        libXtst \
+        libXScrnSaver \
+        libXcomposite \
+        libXdamage \
+        libXcursor \
+        libXi \
+        libXrandr \
+        libXrender \
+        pango \
+        alsa-plugins-pulseaudio \
+        cups-libs \
+        util-linux \
+        procps \
+        net-tools \
+        hostname \
+        dbus \
+        --setopt=install_weak_deps=False \
+        --nodocs \
+        --exclude=*.i686 && \
+    subscription-manager clean && \
+    dnf clean all && \
+    rm -rf /var/cache/yum
+
+# Copy the startup script
+COPY startup_chromium.sh /home/chromiumuser/startup.sh
+
+# Create a non-root user called 'chromiumuser'
+RUN useradd -m chromiumuser && \
+    mkdir -p /tmp/.X11-unix && \
+    chmod 1777 /tmp/.X11-unix && \
+    mkdir -p /run/dbus && \
+    chown chromiumuser:chromiumuser /run/dbus && \
+    touch /home/chromiumuser/.Xauthority && \
+    mkdir -p /home/chromiumuser/.dbus && \
+    mkdir -p /home/chromiumuser/.config/openbox && \
+    mkdir -p /home/chromiumuser/.cache && \
+    chown -R chromiumuser:chromiumuser /home/chromiumuser && \
+    chmod +x /home/chromiumuser/startup.sh
+
+# Switch to the non-root user 'chromiumuser'
+USER chromiumuser
+
+# Expose the noVNC port
+EXPOSE ${NOVNC_PORT}
+
+# Set the default command to run the startup script
+CMD ["/home/chromiumuser/startup.sh"]
