@@ -38,7 +38,7 @@ COPY --from=builder /usr/lib64 /usr/lib64-temp
 COPY --from=builder /usr/libexec /usr/libexec-temp
 COPY --from=builder /usr/share /usr/share-temp
 COPY --from=builder /etc /etc-temp
-COPY --from=builder /usr/lib/python3.9/ /usr/lib/python3.9/
+COPY --from=builder /usr/lib/python3.9/ /usr/lib/python3.9-temp
 
 # Use cp -rn to avoid overwriting existing files and -a to preserve the all the attributes
 RUN cp -ran /usr/bin-temp/* /usr/bin/ && \
@@ -46,13 +46,12 @@ RUN cp -ran /usr/bin-temp/* /usr/bin/ && \
     cp -ran /usr/libexec-temp/* /usr/libexec/ && \
     cp -ran /usr/share-temp/* /usr/share/ && \
     cp -ran /etc-temp/* /etc/ && \
-    rm -rf  /usr/bin-temp /usr/lib64-temp /usr/libexec-temp /usr/share-temp /etc-temp 
+    cp -ran /usr/lib/python3.9-temp/* /usr/lib/python3.9/ && \
+    rm -rf  /usr/bin-temp /usr/lib64-temp /usr/libexec-temp /usr/share-temp /etc-temp  /usr/lib/python3.9-temp/
 
 # Restore the original UBI 9 yum repository files
 RUN rm -rf /etc/yum.repos.d && \
     mv /etc/yum.repos.d.backup /etc/yum.repos.d
-
-# RUN du -h /usr/lib64/dri
 
 # Stage 3: Runtime stage using UBI 9
 FROM registry.access.redhat.com/ubi9/ubi:latest AS runtime
