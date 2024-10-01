@@ -8,11 +8,11 @@ COOKIE=$(mcookie)
 xauth add $DISPLAY . $COOKIE
 
 # Add this line to /home/chromiumuser/startup.sh
-mkdir -p /home/chromiumuser/.vnc && \
-echo "${VNC_PASSWORD}" | vncpasswd -f > /home/chromiumuser/.vnc/passwd
+mkdir -p /etc/.vnc && \
+echo "${VNC_PASSWORD}" | vncpasswd -f > /etc/.vnc/passwd
 
 # Start Xvnc server with authentication
-Xvnc ${DISPLAY} -geometry "${VNC_GEOMETRY}" -depth "${VNC_DEPTH}" -SecurityTypes VncAuth -PasswordFile /home/chromiumuser/.vnc/passwd -localhost 1 &
+Xvnc ${DISPLAY} -geometry "${VNC_GEOMETRY}" -depth "${VNC_DEPTH}" -SecurityTypes VncAuth -PasswordFile /etc/.vnc/passwd -localhost 1 &
 
 # Ensure Xvnc has time to start
 sleep 2
