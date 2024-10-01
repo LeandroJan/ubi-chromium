@@ -65,7 +65,7 @@ COPY --from=cache /usr/libexec /usr/libexec
 COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
-# Crea te username chromiumuser and set permissions
+# Create username chromiumuser and set permissions
 RUN useradd -m chromiumuser && \
     mkdir -p /tmp/.X11-unix && \
     chmod 1777 /tmp/.X11-unix && \
@@ -78,6 +78,9 @@ RUN useradd -m chromiumuser && \
     mkdir -p /home/chromiumuser/.cache && \
     chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
     chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
+    mkdir -p  /.config && \
+    chmod 1777 /.config && \
+
     systemd-machine-id-setup 
 # Passing the script to the container
 COPY --chown=chromiumuser:chromiumuser --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
