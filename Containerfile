@@ -66,6 +66,9 @@ ENV VNC_GEOMETRY=1280x800
 ENV VNC_DEPTH=24
 ENV NOVNC_PORT=6080
 
+# Set flags for the chromium-browser
+ENV CHROMIUM_USER_FLAGS=""
+
 # Copy necessary files from the builder stage to a temporary directory
 COPY --from=cache /usr/bin /usr/bin
 COPY --from=cache /usr/lib64 /usr/lib64

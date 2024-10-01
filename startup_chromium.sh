@@ -21,7 +21,7 @@ sleep 2
 openbox-session &
 
 # Start Chromium 
- chromium-browser --renderer-process-limit=2 --disable-dev-shm-usage --max-old-space-size=2048 &
+ chromium-browser &
 
  #start novnc
  novnc_server --vnc 127.0.0.1:5901 --listen ${NOVNC_PORT}
