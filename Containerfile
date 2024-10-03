@@ -80,27 +80,28 @@ COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
 
-RUN systemd-machine-id-setup 
+RUN systemd-machine-id-setup  && \
+    mkdir -p /tmp/.X11-unix
 
 # Switch to the non-root user
 USER 1001
-RUN mkdir -p /tmp/.X11-unix && \
-    chmod 1777 /tmp/.X11-unix && \
-    touch /tmp/.Xauthority && \
+RUN  touch /tmp/.Xauthority && \
     # chown chromiumuser:chromiumuser /home/chromiumuser/.Xauthority && \
     # mkdir -p /home/chromiumuser/.dbus && \
     # chown -R chromiumuser:chromiumuser /home/chromiumuser/.dbus && \
-    mkdir -p /tmp/.config/openbox && \
+    mkdir -p /tmp/.config && \
+    chmod 1777 /tmp/.config && \
     # chown -R chromiumuser:chromiumuser /home/chromiumuser/.config/openbox && \
     mkdir -p /tmp/.cache && \
+    chmod 1777 /tmp/.config
     #chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
     #chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
     # mkdir -p  /.config && \
     # chmod 1777 /.config && \
-    systemd-machine-id-setup 
+    # systemd-machine-id-setup 
 
 # Passing the script to the container
-COPY --chown=1001:1001 --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
+COPY  --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
 
