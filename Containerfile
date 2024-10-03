@@ -67,7 +67,7 @@ ENV VNC_DEPTH=24
 ENV NOVNC_PORT=6080
 
 # Set flags for the chromium-browser
-ENV CHROMIUM_USER_FLAGS=""
+ENV CHROMIUM_USER_FLAGS="--no-sandbox --disable-gpu --disable-dev-shm-usage"
 
 # Since inside openshift we can't use /home setting $HOME to /tmp
 ENV HOME=/tmp 
