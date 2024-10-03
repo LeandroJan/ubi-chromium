@@ -1,5 +1,6 @@
 # Stage 1: Build stage using AlmaLinux
 FROM almalinux:latest AS builder
+
 # Install necessary packages in a single layer
 RUN yum update -y && \
     yum install -y epel-release && \
@@ -24,10 +25,13 @@ RUN yum update -y && \
         --exclude=*.i686 && \
     yum clean all && \
     rm -rf /var/cache/yum
+
 # Stage 2: Runtime stage using UBI 9
 FROM registry.access.redhat.com/ubi9/ubi:latest AS cache
+
 # Backup the original UBI 9 yum repository files
 RUN cp -ra /etc/yum.repos.d /etc/yum.repos.d.backup
+
 # Copy necessary files from the builder stage to a temporary directory
 COPY --from=builder /usr/bin /usr/bin-temp
 COPY --from=builder /usr/lib64 /usr/lib64-temp
@@ -35,6 +39,7 @@ COPY --from=builder /usr/libexec /usr/libexec-temp
 COPY --from=builder /usr/share /usr/share-temp
 COPY --from=builder /etc /etc-temp
 COPY --from=builder /usr/lib/python3.9/ /usr/lib/python3.9-temp
+
 # Use cp -rn to avoid overwriting existing files and -a to preserve the all the attributes
 RUN cp -ran /usr/bin-temp/* /usr/bin/ && \
     cp -ran --sparse=always /usr/lib64-temp/* /usr/lib64/ && \
@@ -43,21 +48,30 @@ RUN cp -ran /usr/bin-temp/* /usr/bin/ && \
     cp -ran /etc-temp/* /etc/ && \
     cp -ran /usr/lib/python3.9-temp/* /usr/lib/python3.9/ && \
     rm -rf  /usr/bin-temp /usr/lib64-temp /usr/libexec-temp /usr/share-temp /etc-temp  /usr/lib/python3.9-temp/
+
 # Restore the original UBI 9 yum repository files
 RUN rm -rf /etc/yum.repos.d && \
     mv /etc/yum.repos.d.backup /etc/yum.repos.d
+
 # Stage 3: Runtime stage using UBI 9
 FROM registry.access.redhat.com/ubi9/ubi:latest AS runtime
+
 # Set the password using an environment variable
 ENV VNC_PASSWORD=YourSecurePasswordHere
+
 #Set Envs configurable through 'podman run' 
 ENV NOVNC_PORT=6080
 ENV DISPLAY=:1
 ENV VNC_GEOMETRY=1280x800
 ENV VNC_DEPTH=24
 ENV NOVNC_PORT=6080
+
 # Set flags for the chromium-browser
 ENV CHROMIUM_USER_FLAGS=""
+
+# Since inside openshift we can't use /home setting $HOME to /tmp
+ENV HOME=/tmp 
+
 # Copy necessary files from the builder stage to a temporary directory
 COPY --from=cache /usr/bin /usr/bin
 COPY --from=cache /usr/lib64 /usr/lib64
@@ -65,6 +79,7 @@ COPY --from=cache /usr/libexec /usr/libexec
 COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
+
 # Create username chromiumuser and set permissions
 RUN useradd -m chromiumuser && \
     mkdir -p /tmp/.X11-unix && \
@@ -78,15 +93,18 @@ RUN useradd -m chromiumuser && \
     mkdir -p /home/chromiumuser/.cache && \
     chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
     chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
-    mkdir -p  /.config && \
-    chmod 1777 /.config && \
-
+    # mkdir -p  /.config && \
+    # chmod 1777 /.config && \
     systemd-machine-id-setup 
+
 # Passing the script to the container
 COPY --chown=chromiumuser:chromiumuser --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
+
 # Switch to the non-root user 'chromiumuser'
 USER chromiumuser
+
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
+
 # Set the default command to run the startup script
 CMD ["/usr/local/bin/startup.sh"]

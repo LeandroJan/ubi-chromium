@@ -11,8 +11,11 @@ xauth add $DISPLAY . $COOKIE
 mkdir -p /tmp/.vnc && \
 echo "${VNC_PASSWORD}" | vncpasswd -f > /tmp/.vnc/passwd
 
+# Create the log dir
+# mkdir -p /tmp/log/
+
 # Start Xvnc server with authentication
-Xvnc ${DISPLAY} -geometry "${VNC_GEOMETRY}" -depth "${VNC_DEPTH}" -SecurityTypes VncAuth -PasswordFile /tmp/.vnc/passwd -localhost 1 &
+Xvnc ${DISPLAY} -geometry "${VNC_GEOMETRY}" -depth "${VNC_DEPTH}" -SecurityTypes VncAuth -PasswordFile /tmp/.vnc/passwd -L *:stderr:100 -localhost 1 &
 
 # Ensure Xvnc has time to start
 sleep 2
