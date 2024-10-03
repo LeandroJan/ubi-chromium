@@ -80,29 +80,25 @@ COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
 
-# Create username chromiumuser and set permissions
-RUN useradd -m chromiumuser && \
-    mkdir -p /tmp/.X11-unix && \
+# Switch to the non-root user
+USER 1001
+RUN mkdir -p /tmp/.X11-unix && \
     chmod 1777 /tmp/.X11-unix && \
-    touch /home/chromiumuser/.Xauthority && \
-    chown chromiumuser:chromiumuser /home/chromiumuser/.Xauthority && \
-    mkdir -p /home/chromiumuser/.dbus && \
-    chown -R chromiumuser:chromiumuser /home/chromiumuser/.dbus && \
-    mkdir -p /home/chromiumuser/.config/openbox && \
-    chown -R chromiumuser:chromiumuser /home/chromiumuser/.config/openbox && \
-    mkdir -p /home/chromiumuser/.cache && \
-    chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
-    chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
+    touch /tmp/.Xauthority && \
+    # chown chromiumuser:chromiumuser /home/chromiumuser/.Xauthority && \
+    # mkdir -p /home/chromiumuser/.dbus && \
+    # chown -R chromiumuser:chromiumuser /home/chromiumuser/.dbus && \
+    mkdir -p /tmp/.config/openbox && \
+    # chown -R chromiumuser:chromiumuser /home/chromiumuser/.config/openbox && \
+    mkdir -p /tmp/.cache && \
+    #chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
+    #chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
     # mkdir -p  /.config && \
     # chmod 1777 /.config && \
     systemd-machine-id-setup 
 
 # Passing the script to the container
-COPY --chown=chromiumuser:chromiumuser --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
-
-# Switch to the non-root user 'chromiumuser'
-USER chromiumuser
-
+COPY --chown=1001:1001 --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
 
