@@ -80,6 +80,8 @@ COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
 
+RUN systemd-machine-id-setup 
+
 # Switch to the non-root user
 USER 1001
 RUN mkdir -p /tmp/.X11-unix && \
