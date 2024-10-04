@@ -27,6 +27,6 @@ openbox-session &
  chromium-browser &
 
  #start novnc
- novnc_server --vnc 127.0.0.1:5901 --listen ${NOVNC_PORT}
+ novnc_server --vnc 127.0.0.1:5901 --idle-timeout 0 --listen ${NOVNC_PORT}
 
 wait

@@ -40,17 +40,16 @@ COPY --from=builder /usr/share /usr/share-temp
 COPY --from=builder /etc /etc-temp
 COPY --from=builder /usr/lib/python3.9/ /usr/lib/python3.9-temp
 
-# Use cp -rn to avoid overwriting existing files and -a to preserve the all the attributes
+# Use cp -rn to avoid overwriting existing files and -a to preserve the all the attributes.
+# Restore the original UBI 9 yum repository files
 RUN cp -ran /usr/bin-temp/* /usr/bin/ && \
     cp -ran --sparse=always /usr/lib64-temp/* /usr/lib64/ && \
     cp -ran /usr/libexec-temp/* /usr/libexec/ && \
     cp -ran /usr/share-temp/* /usr/share/ && \
     cp -ran /etc-temp/* /etc/ && \
     cp -ran /usr/lib/python3.9-temp/* /usr/lib/python3.9/ && \
-    rm -rf  /usr/bin-temp /usr/lib64-temp /usr/libexec-temp /usr/share-temp /etc-temp  /usr/lib/python3.9-temp/
-
-# Restore the original UBI 9 yum repository files
-RUN rm -rf /etc/yum.repos.d && \
+    rm -rf  /usr/bin-temp /usr/lib64-temp /usr/libexec-temp /usr/share-temp /etc-temp  /usr/lib/python3.9-temp/ && \
+    rm -rf /etc/yum.repos.d && \
     mv /etc/yum.repos.d.backup /etc/yum.repos.d
 
 # Stage 3: Runtime stage using UBI 9
@@ -59,10 +58,10 @@ FROM registry.access.redhat.com/ubi9/ubi:latest AS runtime
 # Set the password using an environment variable
 ENV VNC_PASSWORD=YourSecurePasswordHere
 
-#Set Envs configurable through 'podman run' 
+#Set Envs to configure VNC and NOVNC
 ENV NOVNC_PORT=6080
 ENV DISPLAY=:1
-ENV VNC_GEOMETRY=1280x800
+ENV VNC_GEOMETRY=1600x900
 ENV VNC_DEPTH=24
 ENV NOVNC_PORT=6080
 
