@@ -20,11 +20,11 @@ The following approach demonstrates how to prepare the Red Hat OpenShift environ
 
 You need to create a project to isolate the context of this lab. For this example, the project is called _ubi-chromium_.
 
-[image-project]
+![](images/image-project.jpeg)
 
 Next, we will prepare the deployment of our image using the "Import from Git" option.
 
-[image-import-from-git]
+![](images/image-import-from-git.png)
 
 The information to be filled in is as follows:
 
@@ -38,14 +38,14 @@ Then click Create Button.
 
 After the build completes successfully, the pod icon on the OpenShift screen should be dark blue, and the pod should be in Running status.
 
-[image-pod]
+![](images/image-pod.png)
 
 When accessing the route assigned to the application service, the noVNC connection screen is displayed.
 
-[image-vnc]
+![](images/image-vnc.png)
 
 Click the Connect button and enter the access password defined previously during the build process. The result should be an environment in which Chromium is running.
 
-[image-chromium]
+![](images/image-chromium.png)
 
 The environment has an integrated xterm terminal so you can run commands on the UBI image.
