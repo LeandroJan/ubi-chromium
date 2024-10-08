@@ -16,11 +16,15 @@ podman run -d -p 6080:6080 -e VNC_PASSWORD=<your_password> -e VNC_GEOMETRY=<defa
 
 ## Deploying this solution on Red Hat OpenShift 
 
+First of all, let's start by briefly explaining what OpenShift is.
+
+Red Hat OpenShift is an enterprise-grade Kubernetes platform designed for building, deploying, and managing containerized applications at scale. It provides a full-stack automated environment for managing containers, combining Kubernetes with developer-friendly tools and additional enterprise features. 
+
 The following approach demonstrates how to prepare the Red Hat OpenShift environment to create a UBI container in which you can run a version of chromium.
 
 You need to create a project to isolate the context of this lab. For this example, the project is called _ubi-chromium_.
 
-![](images/image-project.jpeg)
+![](images/image-project.png)
 
 Next, we will prepare the deployment of our image using the "Import from Git" option.
 
