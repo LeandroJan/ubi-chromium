@@ -18,19 +18,34 @@ podman run -d -p 6080:6080 -e VNC_PASSWORD=<your_password> -e VNC_GEOMETRY=<defa
 
 The following approach demonstrates how to prepare the Red Hat OpenShift environment to create a UBI container in which you can run a version of chromium.
 
-You need to create a project to isolate the context of this lab. For this example, the project is called **ubi-chromium**.
+You need to create a project to isolate the context of this lab. For this example, the project is called _ubi-chromium_.
+
 [image-project]
 
 Next, we will prepare the deployment of our image using the "Import from Git" option.
+
 [image-import-from-git]
 
 The information to be filled in is as follows:
 
-* Git Repo URL: __https://github.com/LeandroJan/ubi-chromium__
-* Application: __ubi-chromium-app__
-* Name: __ubi-chromium-new__
-* Environment variables (Inside Show advanced Deployment option): __VNC_PASSWORD__:__redhat123__
-* Target Port: __6080__
+* Git Repo URL: _https://github.com/LeandroJan/ubi-chromium_
+* Application: _ubi-chromium-app_
+* Name: _ubi-chromium-new_
+* Environment variables (Inside Show advanced Deployment option): _VNC_PASSWORD_:_redhat123_
+* Target Port: _6080_
 
-Then click Create Button
+Then click Create Button.
 
+After the build completes successfully, the pod icon on the OpenShift screen should be dark blue, and the pod should be in Running status.
+
+[image-pod]
+
+When accessing the route assigned to the application service, the noVNC connection screen is displayed.
+
+[image-vnc]
+
+Click the Connect button and enter the access password defined previously during the build process. The result should be an environment in which Chromium is running.
+
+[image-chromium]
+
+The environment has an integrated xterm terminal so you can run commands on the UBI image.
