@@ -30,15 +30,14 @@ Next, we will prepare the deployment of our image using the "Import from Git" op
 
 ![](images/image-import-from-git.png)
 
-The information to be filled in is as follows:
+The information to be filled in on the form is as follows:
 
 * Git Repo URL: _https://github.com/LeandroJan/ubi-chromium_
 * Application: _ubi-chromium-app_
 * Name: _ubi-chromium-new_
 * Environment variables (Inside Show advanced Deployment option): _VNC_PASSWORD_:_redhat123_
 * Target Port: _6080_
-
-Then click Create Button.
+* Then _click Create Button_.
 
 After the build completes successfully, the pod icon on the OpenShift screen should be dark blue, and the pod should be in Running status.
 
