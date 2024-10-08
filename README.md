@@ -13,3 +13,5 @@ podman run -d -p 6080:6080 -e VNC_PASSWORD=<your_password> -e VNC_GEOMETRY=<defa
 
 ## Accessing the GUI
 `http://localhost:<chosen_published_port>`
+
+## How to deploy this solution on Red Hat OpenShift 
