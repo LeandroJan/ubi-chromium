@@ -1,5 +1,5 @@
 # Stage 1: Build stage using CentOS Stream 9 (contribution of imesquit@redhat.com)
-FROM centos:stream9 AS builder
+FROM quay.io/centos/centos:stream9 AS builder
 
 # Install necessary packages in a single layer
 RUN dnf update -y && \
