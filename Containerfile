@@ -79,12 +79,11 @@ COPY --from=cache /usr/share /usr/share
 COPY --from=cache /etc /etc
 COPY --from=cache /usr/lib/python3.9/ /usr/lib/python3.9/
 
+# Adding the necessary files
 RUN systemd-machine-id-setup  && \
-    mkdir -p /tmp/.X11-unix
-
-# Switch to the non-root user
-RUN  touch /tmp/.Xauthority && \
-    chmod -R g=u /tmp/.Xauthority && \
+    mkdir -p /tmp/.X11-unix && \
+    touch /tmp/.Xauthority && \
+    chmod 770 /tmp/.Xauthority && \
     mkdir -p /tmp/.config && \
     chgrp -R 0 /tmp/.config && \
     chmod -R g=u /tmp/.config && \
@@ -95,11 +94,11 @@ RUN  touch /tmp/.Xauthority && \
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
 
-# Changing user
-USER 1001
-
 # Passing the script to the container
 COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
+
+# Switch to the non-root user
+USER 1001
 
 # Set the default command to run the startup script
 CMD ["/usr/local/bin/startup.sh"]
