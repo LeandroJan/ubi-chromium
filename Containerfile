@@ -95,7 +95,6 @@ RUN  touch /tmp/.Xauthority && \
 # Passing the script to the container
 COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
 
-RUN ls -l /usr/local/bin/startup.sh
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
 
