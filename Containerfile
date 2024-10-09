@@ -84,6 +84,7 @@ RUN systemd-machine-id-setup  && \
 
 # Switch to the non-root user
 RUN  touch /tmp/.Xauthority && \
+    chmod -R g=u /tmp/.Xauthority && \
     mkdir -p /tmp/.config && \
     chgrp -R 0 /tmp/.config && \
     chmod -R g=u /tmp/.config && \
