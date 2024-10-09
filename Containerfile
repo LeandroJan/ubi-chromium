@@ -89,8 +89,8 @@ RUN  touch /tmp/.Xauthority && \
     chgrp -R 0 /tmp/.config && \
     chmod -R g=u /tmp/.config && \
     mkdir -p /tmp/.cache && \
-    chgrp -R 0 /tmp/.config && \
-    chmod -R g=u /tmp/.config
+    chgrp -R 0 /tmp/.cache && \
+    chmod -R g=u /tmp/.cache
 
 # Passing the script to the container
 COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
