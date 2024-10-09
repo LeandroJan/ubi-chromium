@@ -83,7 +83,6 @@ RUN systemd-machine-id-setup  && \
     mkdir -p /tmp/.X11-unix
 
 # Switch to the non-root user
-USER 1001
 RUN  touch /tmp/.Xauthority && \
     mkdir -p /tmp/.config && \
     chgrp -R 0 /tmp/.config && \
@@ -92,11 +91,14 @@ RUN  touch /tmp/.Xauthority && \
     chgrp -R 0 /tmp/.cache && \
     chmod -R g=u /tmp/.cache
 
-# Passing the script to the container
-COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
-
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
+
+# Changing user
+USER 1001
+
+# Passing the script to the container
+COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
 
 # Set the default command to run the startup script
 CMD ["/usr/local/bin/startup.sh"]
