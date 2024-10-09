@@ -85,22 +85,17 @@ RUN systemd-machine-id-setup  && \
 # Switch to the non-root user
 USER 1001
 RUN  touch /tmp/.Xauthority && \
-    # chown chromiumuser:chromiumuser /home/chromiumuser/.Xauthority && \
-    # mkdir -p /home/chromiumuser/.dbus && \
-    # chown -R chromiumuser:chromiumuser /home/chromiumuser/.dbus && \
     mkdir -p /tmp/.config && \
-    chmod 1777 /tmp/.config && \
-    # chown -R chromiumuser:chromiumuser /home/chromiumuser/.config/openbox && \
+    chgrp -R 0 /tmp/.config && \
+    chmod -R g=u /tmp/.config && \
     mkdir -p /tmp/.cache && \
-    chmod 1777 /tmp/.config
-    #chown -R chromiumuser:chromiumuser /home/chromiumuser/.cache && \
-    #chown -R chromiumuser:chromiumuser /home/chromiumuser/.config && \
-    # mkdir -p  /.config && \
-    # chmod 1777 /.config && \
-    # systemd-machine-id-setup 
+    chgrp -R 0 /tmp/.config && \
+    chmod -R g=u /tmp/.config
 
 # Passing the script to the container
-COPY  --chmod=755 startup_chromium.sh /usr/local/bin/startup.sh
+COPY  --chown=1001:0 --chmod=775 startup_chromium.sh /usr/local/bin/startup.sh
+
+RUN ls -l /usr/local/bin/startup.sh
 # Expose the VNC port
 EXPOSE ${NOVNC_PORT}
 
